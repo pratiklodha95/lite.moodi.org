@@ -32,7 +32,7 @@
 			var college=$('#college').val();
 			var year=$('#year').val();
 			console.log(city+' '+name+' '+email+' '+mobile+' '+gender+' '+college+' '+year);
-			$.post("http://localhost:5000/api/submit",{city:city, name:name,
+			$.post("http://lite.moodi.org/api/submit",{city:city, name:name,
 				email:email, mobile:mobile, gender:gender, college:college, year:year},function(data){
 				console.log(data);
 			});

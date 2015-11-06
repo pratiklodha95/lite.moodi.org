@@ -5,16 +5,16 @@ var mysql=require('mysql');
 var app=express();
 
 
-app.set('port',process.env.PORT || 5000);
+app.set('port',process.env.PORT || 5678);
 
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 var mysql = require('mysql');
 var connection = mysql.createConnection({
 	host : 'localhost',
-	user : 'root',
-	password :'pratik123' ,
-	database :'mi_2014' 
+	user : '',
+	password :'' ,
+	database :'' 
 })
 
 connection.connect();
@@ -22,15 +22,19 @@ connection.connect();
 app.get('/',express.static(__dirname)); //serves index.html
 
 
-var insert=function(params,new_mi_no)
+var insert=function(params,new_mi_no,res)
 {
-	 connection.query('insert into users (mi_no, city_id, clg_id, name, email, phone, dob, gender, year_study) values (' + connection.escape(new_mi_no) + ', '+ connection.escape(params.city_id) + ', ' + connection.escape(params.college_id) + ', ' + connection.escape(params.name) + ', ' + connection.escape(params.email) + ', ' + connection.escape(params.mobile) + ', ' + connection.escape(params.dob) + ', ' + connection.escape(params.gender) + ', ' + connection.escape(params.year_study) + ')',function selectCb(err, results, fields)
+	new_mi_no=new_mi_no.toUpperCase();
+	console.log(new_mi_no);
+	 connection.query('insert into users (mi_no, city_id, clg_id, name, email, phone, gender, year_study) values (' + connection.escape(new_mi_no) + ', '+ connection.escape(params.city) + ', ' + connection.escape(params.college) + ', ' + connection.escape(params.name) + ', ' + connection.escape(params.email) + ', ' + connection.escape(params.mobile) + ', ' + connection.escape(params.gender) + ', ' + connection.escape(params.year) + ')',function selectCb(err, results, fields)
 	 {
 	 	if(err){
 	 		var obj={
 	 			status:false,
-	 			message:"Error in inserting data into database please try again"
+	 			message:"Error in inserting data into database please try again",
+	 			data:err
 	 		}
+	 		res.send(obj);
 	 	}
 	 	else{
 	 		var obj={
@@ -38,7 +42,7 @@ var insert=function(params,new_mi_no)
 	 			new_mi_no:new_mi_no,
 	 			message:"Successfully Registered"
 	 		}
-	 		console.log(new_mi_no);
+
 	 		res.send(obj);
 
 	 		//sending mails
@@ -49,7 +53,7 @@ var insert=function(params,new_mi_no)
 app.post('/api/submit',urlencodedParser,function(req,res){
 	var params=req.body;
 	console.log(params);
-	connection.query('SELECT * from users where phone is LIKE '+connection.escape(params.mobile), function(err,rows,fields){
+	connection.query('SELECT * from users where phone LIKE '+connection.escape(params.mobile), function(err,rows,fields){
 		if(err)
 		{
 			var obj={
@@ -72,12 +76,14 @@ app.post('/api/submit',urlencodedParser,function(req,res){
 			var mi=params.name.slice(0,3);
 			var MiNo ='MI-'+mi+'-%';
 			var new_mi_no;
-			connection.query('SELECT mi_no from users where mi_no is like '+MiNo+'ORDER BY mi_no DESC LIMIT 1',function(err,rowss,fields){
+			connection.query("SELECT mi_no from users where mi_no LIKE '"+MiNo+"' ORDER BY mi_no DESC LIMIT 1",function(err,rowss,fields){
 				if(err)
 				{
+					console.log(err);
 					var obj={
 			 			status:false,
-			 			message:"Error in inserting data into database please try again"
+			 			message:"Error in inserting data into database please try again",
+			 			data:err
 			 		}
 			 		res.send(obj);
 				}
@@ -85,8 +91,8 @@ app.post('/api/submit',urlencodedParser,function(req,res){
 				{
 					if(rowss[0]==null)
 					{
-						new_mi_no='MI-'mi+'-101';
-						insert(params,new_mi_no);
+						new_mi_no='MI-'+mi+'-101';
+						insert(params,new_mi_no,res);
 					}
 					else if(parseInt(rowss[0].mi_no.split("-")[2])==999)
 					{
@@ -96,20 +102,21 @@ app.post('/api/submit',urlencodedParser,function(req,res){
                   			{
                   				var obj={
 						 			status:false,
-						 			message:"Error in inserting data into database please try again"
+						 			message:"Error in inserting data into database please try again",
+						 			data:err
 						 		}
 						 		res.send(obj);
                   			}
                   			else if(rowsss[0]==null)
                   			{
                   				new_mi_no='MI-'+mi+'-1000';
-                  				insert(params,new_mi_no);
+                  				insert(params,new_mi_no,res);
                   			}
                   			else
                   			{
               					var no=parseInt(rowsss[0].mi_no.split("-")[2])+1;
                       			new_mi_no='MI-'+mi+'-'+no;
-                      			insert(params,new_mi_no);
+                      			insert(params,new_mi_no,res);
                   			}
                   		});
 					}
@@ -117,7 +124,7 @@ app.post('/api/submit',urlencodedParser,function(req,res){
 					{
 						var no=parseInt(rowss[0].mi_no.split("-")[2])+1;
            		 		new_mi_no='MI-'+mi+'-'+no;
-           		 		insert(params,new_mi_no);
+           		 		insert(params,new_mi_no,res);
 					}
 				}
 			})//end of second query
