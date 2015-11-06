@@ -13,14 +13,38 @@ var mysql = require('mysql');
 var connection = mysql.createConnection({
 	host : 'localhost',
 	user : 'root',
-	password : ,
-	database : 
+	password :'pratik123' ,
+	database :'mi_2014' 
 })
 
 connection.connect();
 
 app.get('/',express.static(__dirname)); //serves index.html
 
+
+var insert=function(params,new_mi_no)
+{
+	 connection.query('insert into users (mi_no, city_id, clg_id, name, email, phone, dob, gender, year_study) values (' + connection.escape(new_mi_no) + ', '+ connection.escape(params.city_id) + ', ' + connection.escape(params.college_id) + ', ' + connection.escape(params.name) + ', ' + connection.escape(params.email) + ', ' + connection.escape(params.mobile) + ', ' + connection.escape(params.dob) + ', ' + connection.escape(params.gender) + ', ' + connection.escape(params.year_study) + ')',function selectCb(err, results, fields)
+	 {
+	 	if(err){
+	 		var obj={
+	 			status:false,
+	 			message:"Error in inserting data into database please try again"
+	 		}
+	 	}
+	 	else{
+	 		var obj={
+	 			status:true,
+	 			new_mi_no:new_mi_no,
+	 			message:"Successfully Registered"
+	 		}
+	 		console.log(new_mi_no);
+	 		res.send(obj);
+
+	 		//sending mails
+	 	}
+	 });
+}
 
 app.post('/api/submit',urlencodedParser,function(req,res){
 	var params=req.body;
@@ -45,10 +69,61 @@ app.post('/api/submit',urlencodedParser,function(req,res){
 			res.send(obj);
 		}
 		else{
-			var MiNo ='MI-'+params.name.slice(0,3)+'-%';
-			connection.query('SELECT * from users where mi_no is like '+MiNo,function())
+			var mi=params.name.slice(0,3);
+			var MiNo ='MI-'+mi+'-%';
+			var new_mi_no;
+			connection.query('SELECT mi_no from users where mi_no is like '+MiNo+'ORDER BY mi_no DESC LIMIT 1',function(err,rowss,fields){
+				if(err)
+				{
+					var obj={
+			 			status:false,
+			 			message:"Error in inserting data into database please try again"
+			 		}
+			 		res.send(obj);
+				}
+				else
+				{
+					if(rowss[0]==null)
+					{
+						new_mi_no='MI-'mi+'-101';
+						insert(params,new_mi_no);
+					}
+					else if(parseInt(rowss[0].mi_no.split("-")[2])==999)
+					{
+						var new_MiNo='MI-'+mi+'-1___';
+						connection.query('SELECT mi_no FROM users where mi_no LIKE "'+new_MiNo+'" ORDER BY mi_no DESC LIMIT 1', function(err, rowsss, fields) {
+                  			if(err)
+                  			{
+                  				var obj={
+						 			status:false,
+						 			message:"Error in inserting data into database please try again"
+						 		}
+						 		res.send(obj);
+                  			}
+                  			else if(rowsss[0]==null)
+                  			{
+                  				new_mi_no='MI-'+mi+'-1000';
+                  				insert(params,new_mi_no);
+                  			}
+                  			else
+                  			{
+              					var no=parseInt(rowsss[0].mi_no.split("-")[2])+1;
+                      			new_mi_no='MI-'+mi+'-'+no;
+                      			insert(params,new_mi_no);
+                  			}
+                  		});
+					}
+					else
+					{
+						var no=parseInt(rowss[0].mi_no.split("-")[2])+1;
+           		 		new_mi_no='MI-'+mi+'-'+no;
+           		 		insert(params,new_mi_no);
+					}
+				}
+			})//end of second query
+					
 		}
-	})
+	}) //end of first query
 });
 
 http.createServer(app).listen(app.get('port'),function(){
