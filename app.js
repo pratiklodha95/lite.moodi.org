@@ -17,7 +17,7 @@ var connection = mysql.createConnection({
 	database :'' 
 })
 
-connection.connect();
+// connection.connect();
 
 app.get('/',express.static(__dirname)); //serves index.html
 
@@ -46,6 +46,9 @@ var insert=function(params,new_mi_no,res)
 	 		res.send(obj);
 
 	 		//sending mails
+
+	 		
+	 		
 	 	}
 	 });
 }

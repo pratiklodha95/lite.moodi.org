@@ -3,6 +3,9 @@
 <head>
 	<title>Mood Indigo</title>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+
 	<script>
 		$.get("https://moodi.org/api/city",function(data){
 			console.log(data);
@@ -38,12 +41,19 @@
 			});
 		}
 	</script>
+	<style type="text/css">
+	.form-signin{
+		max-width: 350px;
+		margin: 0 auto;
+		padding: 15px;
+	}
+	</style>
 </head>
 <body>
- For now lets directly deal with only MI-NO registration
+<!--  For now lets directly deal with only MI-NO registration -->
 
  <div class="registration">
-	<ul>
+	<!-- <ul>
 		<li>same field as the main website</li>
 		<li>need to call the city api</li>
 		<li>need to college api whenever city selected change</li>
@@ -56,22 +66,26 @@
 		<li>If any data is same, display already registered and display the old mi-no</li>
 		<li>If any error display all the error</li>
 	</ol>
-	<input type="text" id="name" value="name"/>
-	<input type="text" id="email" value="email id"/>
-	<input type="text" id="mobile" value="mobile no"/>
-	<select id="gender">
+	 -->
+	<form class="form-signin">
+	<input class="form-control" type="text" id="name" value="name"/>
+	<input class="form-control" type="text" id="email" value="email id"/>
+	<input class="form-control" type="text" id="mobile" value="mobile no"/>
+	<span class="help-block">A block of help text that breaks onto a new line and may extend beyond one line.</span>
+	<select class="form-control" id="gender">
 		<option value="male">Male</option>
 		<option value="female">Female</option> 
 	</select>
-	<select id="city" name="city" onChange="getCollege(this.value)"> </select>
-	<select id="college" name="college"> </select>
-	<select id="year">
+	<select multiple class="form-control" id="city" name="city" onChange="getCollege(this.value)"> </select>
+	<select class="form-control" id="college" name="college"> </select>
+	<select class="form-control" id="year">
 		<option value="first">first</option>
 		<option value="second">second</option>
 		<option value="third">third</option>
 		<option value="fourth">fourth</option>
 	</select>
-	<input type="submit" onclick="randm()" />
+	<input class="btn btn-lg btn-primary btn-block" type="submit" onclick="randm()" />
+ 	</form>
  </div>
 
 </body>
