@@ -31,12 +31,13 @@
 			var name =$('#name').val();
 			var email=$('#email').val();
 			var mobile=$('#mobile').val();
+			var bday=$('bday').val()
 			var gender=$('#gender').val();
 			var college=$('#college').val();
 			var year=$('#year').val();
-			console.log(city+' '+name+' '+email+' '+mobile+' '+gender+' '+college+' '+year);
+			console.log(city+' '+name+' '+email+' '+mobile+' '+bday+' '+gender+' '+college+' '+year);
 			$.post("http://lite.moodi.org/api/submit",{city:city, name:name,
-				email:email, mobile:mobile, gender:gender, college:college, year:year},function(data){
+				email:email, mobile:mobile, bday:bday, gender:gender, college:college, year:year},function(data){
 				console.log(data);
 			});
 		}
@@ -52,6 +53,7 @@
 <body>
 <!--  For now lets directly deal with only MI-NO registration -->
 
+<div>
  <div class="registration">
 	<!-- <ul>
 		<li>same field as the main website</li>
@@ -68,25 +70,55 @@
 	</ol>
 	 -->
 	<form class="form-signin">
-	<input class="form-control" type="text" id="name" value="name"/>
-	<input class="form-control" type="text" id="email" value="email id"/>
-	<input class="form-control" type="text" id="mobile" value="mobile no"/>
-	<span class="help-block">A block of help text that breaks onto a new line and may extend beyond one line.</span>
-	<select class="form-control" id="gender">
-		<option value="male">Male</option>
-		<option value="female">Female</option> 
-	</select>
-	<select multiple class="form-control" id="city" name="city" onChange="getCollege(this.value)"> </select>
+	<div class="form-group">
+	<label class="control-label">Name</label>
+	<input class="form-control" type="text" id="name" placeholder="Full name"/>
+	<span id="nameerr"></span>
+	</div>
+	<div class="form-group">
+	<label class="control-label">Email ID</label>
+	<input class="form-control" type="text" id="email" placeholder="Email ID"/></div>
+	<div class="form-group">
+	<label class="control-label">Mobile No.</label>
+	<input class="form-control" type="text" id="mobile" placeholder="Mobile No."/></div>
+	<div class="form-group">
+	<label class="control-label">Date of birth</label>
+	<input class="form-control" type="date" id="bday"/>
+	<!--<span class="help-block">A block of help text that breaks onto a new line and may extend beyond one line.</span>-->
+	</div>
+	<div class="form-group">
+	<label class="control-label">Gender: </label>
+	<label class="radio-inline">
+		<input type="radio" name="gender" value="male">Male
+	</label>
+	<label class="radio-inline">
+		<input type="radio" name="gender" value="female">Female
+	</label>
+	<label class="radio-inline">
+		<input type="radio" name="gender" value="other">Other
+	</label>
+	</div>
+	<div class="form-group">
+	<label class="control-label">City</label>
+	<select class="form-control" id="city" name="city" onChange="getCollege(this.value)"> </select>
+	</div>
+	<div class="form-group">
+	<label class="control-label">College</label>
 	<select class="form-control" id="college" name="college"> </select>
+	</div>
+	<div class="form-group">
+	<label class="control-label">Year</label>
 	<select class="form-control" id="year">
 		<option value="first">first</option>
 		<option value="second">second</option>
 		<option value="third">third</option>
 		<option value="fourth">fourth</option>
+		<option value="fifth">fifth</option>
 	</select>
+	</div>
 	<input class="btn btn-lg btn-primary btn-block" type="submit" onclick="randm()" />
  	</form>
  </div>
-
+</div>
 </body>
 </html>
