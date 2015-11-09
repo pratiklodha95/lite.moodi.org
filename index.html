@@ -45,7 +45,7 @@
 			var name =$('#name').val();
 			var email=$('#email').val();
 			var mobile=$('#mobile').val();
-			var bday=$('bday').val()
+			var bday=$('#bday').val()
 			var gender=$('#gender').val();
 			var college=$('#college').val();
 			var year=$('#year').val();
@@ -53,6 +53,18 @@
 			{
 				$.post("http://lite.moodi.org/api/submit",{city:city, name:name,email:email, mobile:mobile, gender:gender, college:college, year:year},function(data){
 					console.log(data);
+					if(data.status)
+					{
+						document.getElementById("mino").innerHTML="Congratulations! You have been registered for MI 2k15.</br> Your MI number is <b>"+data.mi_no+"</b>."
+					}
+					else if(data.err==1)
+					{
+						document.getElementById("mino").innerHTML="You are already registered for MI 2k15. Your MI number is <b>"+data.data.mi_no+"</b>."
+					}
+					else
+					{
+						document.getElementById("mino").innerHTML="Registration unsuccessful! Some error occured. Please try again later."
+					}
 				});	
 			}
 			else
@@ -102,9 +114,10 @@
 <body>
 <h2>Mood Indigo 2015 - A hawaiian escapade</h2>
 <h3>MI Number Registration Form for lite version</h3>
+<p id="mino"> </p>
 <div>
  <div class="registration">
-	<form class="form-signin">
+	<div class="form-signin">
 	<div class="form-group">
 	<label class="control-label">Name</label>
 	<input class="form-control" type="text" id="name" placeholder="Full name"/>
@@ -152,7 +165,7 @@
 	</select>
 	</div>
 	<input class="btn btn-lg btn-primary btn-block" type="submit" onclick="randm()" />
- 	</form>
+ 	</div>
  </div>
 </div>
 </body>

@@ -149,6 +149,6 @@ app.post('/api/submit',urlencodedParser,function(req,res){
 });
 
 http.createServer(app).listen(app.get('port'),function(){
-	console.log("server is running for faster moodi on port 5000");
+	console.log("server is running for faster moodi on port 5678");
 });
 
